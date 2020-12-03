@@ -7,7 +7,6 @@ MARIO = """
 XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 X          $               X
 X    #   #?#?#             X
-X                          X
 X                      $   X
 X.                        *X
 X##########################X
@@ -15,18 +14,6 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 """
 
 SPRITE_SIZE = 64
-
-REWARD_GOAL = 60
-REWARD_COIN = 30
-REWARD_DEFAULT = -1
-REWARD_STUCK = -6
-REWARD_IMPOSSIBLE = -60
-
-DEFAULT_LEARNING_RATE = 1
-DEFAULT_DISCOUNT_FACTOR = 0.5
-
-UP, DOWN, LEFT, RIGHT = 'U', 'D', 'L', 'R'
-ACTIONS = [UP, DOWN, LEFT, RIGHT]
 
 
 # Constants
@@ -40,128 +27,13 @@ COIN_SCALING = 0.5
 
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
-PLAYER_JUMP_SPEED = 23
+PLAYER_JUMP_SPEED = 22
 
 LEFT_VIEWPORT_MARGIN = 250
 RIGHT_VIEWPORT_MARGIN = 250
 BOTTOM_VIEWPORT_MARGIN = 50
 TOP_VIEWPORT_MARGIN = 100
 
-
-class Environment:
-    def __init__(self, text):
-        self.states = {}
-        self.walls = {}
-        self.coins = {}
-        self.boxes = {}
-        lines = text.strip().split('\n')
-
-        self.height = len(lines)
-        self.width = len(lines[0])
-        print(lines)
-        print(self.height)
-        print(self.width)
-
-        for row in range(self.height):
-            for col in range(self.width):
-                self.states[(row, col)] = lines[row][col]
-                if lines[row][col] == ".":
-                    self.starting_point = (row, col)
-                elif lines[row][col] == "*":
-                    self.goal = (row, col)
-                elif lines[row][col] == "#":
-                    self.walls[(row, col)] = lines[row][col]
-                elif lines[row][col] == "$":
-                    self.coins[(row, col)] = lines[row][col]
-                elif lines[row][col] == "?":
-                    self.boxes[(row, col)] = lines[row][col]
-                    
-    
-    def apply(self, state, action):
-        if action == UP:
-            new_state = (state[0] - 1, state[1])
-        elif action == DOWN:
-            new_state = (state[0] + 1, state[1])
-        elif action == LEFT:
-            new_state = (state[0], state[1] - 1)
-        elif action == RIGHT:
-            new_state = (state[0], state[1] + 1)
-            
-        if new_state in self.walls:
-            return state, 0
-        
-        if new_state in self.states:
-            #calculer la récompense
-            if self.states[new_state] in ['.']:
-                reward = REWARD_STUCK
-            elif self.states[new_state] in ['*']: #Sortie du labyrinthe : grosse récompense
-                reward = REWARD_GOAL
-            elif self.states[new_state] in ['$']:
-                reward = REWARD_COIN
-            # if self.states[new_state] in ['#']:
-            #     reward = REWARD_IMPOSSIBLE
-            else:
-                reward = REWARD_DEFAULT
-        else:
-           #Etat impossible: grosse pénalité
-           new_state = state
-           reward = REWARD_IMPOSSIBLE
-
-        return new_state, reward 
-
-class Agent:
-    def __init__(self, environment):
-        self.environment = environment
-        self.reset()
-        self.policy = Policy(environment.states.keys(), ACTIONS)
-    
-    def reset(self):
-        self.state = self.environment.starting_point
-        self.previous_state = self.state
-        self.score = 0
-    
-    def best_action(self):
-        return self.policy.best_action(self.state)
-
-    def do(self, action):
-        self.previous_state = self.state
-        self.state, self.reward = self.environment.apply(self.state, action)
-        self.score += self.reward
-        self.last_action = action
-    
-    def update_policy(self):
-        self.policy.update(self.previous_state, self.state, self.last_action, self.reward)
-
-class Policy: #Q-table
-    def __init__(self, states, actions,
-                 learning_rate = DEFAULT_LEARNING_RATE,
-                 discount_factor = DEFAULT_DISCOUNT_FACTOR):
-        self.table = {}
-        self.learning_rate = learning_rate
-        self.discount_factor = discount_factor
-        for s in states:
-            self.table[s] = {}
-            for a in actions:
-                self.table[s][a] = 0
-
-    def __repr__(self):
-        res = ''
-        for state in self.table:
-            res += f'{state}\t{self.table[state]}\n'
-        return res
-
-    def best_action(self, state):
-        action = None
-        for a in self.table[state]:
-            if action is None or self.table[state][a] > self.table[state][action]:
-                action = a
-        return action
-
-    def update(self, previous_state, state, last_action, reward):
-        #Q(st, at) = Q(st, at) + learning_rate * (reward + discount_factor * max(Q(state)) - Q(st, at))
-        maxQ = max(self.table[state].values())
-        self.table[previous_state][last_action] += self.learning_rate * \
-            (reward + self.discount_factor * maxQ - self.table[previous_state][last_action])
 
 class MarioWindow(arcade.Window):
     def __init__(self, agent):
@@ -226,7 +98,7 @@ class MarioWindow(arcade.Window):
                 sprite.center_x = state[1] * SPRITE_SIZE + SPRITE_SIZE * TILE_SCALING
                 sprite.center_y = self.height - (state[0] * SPRITE_SIZE + SPRITE_SIZE * TILE_SCALING)
                 self.box_list.append(sprite)
-                # self.wall_list.append(sprite)
+                self.wall_list.append(sprite)
 
         self.goal = arcade.Sprite(":resources:images/items/flagGreen1.png", TILE_SCALING)
         self.goal.center_x = self.agent.environment.goal[1] * self.goal.width + self.goal.width * TILE_SCALING
@@ -275,6 +147,7 @@ class MarioWindow(arcade.Window):
             # if (self.player_sprite.center_y < box.center_y):
             box.remove_from_sprite_lists()
             # self.score += REWARD_COIN
+            print("boom")
 
         changed = False
 
