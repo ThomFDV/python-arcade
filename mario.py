@@ -1,4 +1,6 @@
 import arcade
+from environment import Environment
+from agent import Agent
 
 #Q-table
 # U L R
@@ -202,74 +204,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# class MarioWindow(arcade.Window):
-#     def __init__(self, agent):
-#         super().__init__(agent.environment.width * SPRITE_SIZE,
-#                         agent.environment.height * SPRITE_SIZE,
-#                         "Mario Test ESGI")
-#         self.agent = agent
-#         arcade.set_background_color(arcade.csscolor.MEDIUM_PURPLE)
-    
-#     def setup(self):
-#         self.walls = arcade.SpriteList()
-#         for state in self.agent.environment.states:
-#             if self.agent.environment.states[state] == '#':
-#                 sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", 0.5)
-#                 sprite.center_x = state[1] * sprite.width + sprite.width * 0.5
-#                 sprite.center_y = self.height - (state[0] * sprite.width + sprite.width * 0.5)
-#                 self.walls.append(sprite)
-#             elif self.agent.environment.states[state] == '£': 
-#                 sprite = arcade.Sprite(":resources:images/tiles/snowCenter.png", 0.5)
-#                 sprite.center_x = state[1] * sprite.width + sprite.width * 0.5
-#                 sprite.center_y = self.height - (state[0] * sprite.width + sprite.width * 0.5)
-#                 self.walls.append(sprite)
-#             elif self.agent.environment.states[state] == 'C': 
-#                 sprite = arcade.Sprite(":resources:images/items/gold_1.png", 0.5)
-#                 sprite.center_x = state[1] * sprite.width + sprite.width * 0.5
-#                 sprite.center_y = self.height - (state[0] * sprite.width + sprite.width * 0.5)
-#                 self.walls.append(sprite)
-#             elif self.agent.environment.states[state] == '?': 
-#                 sprite = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", 0.5)
-#                 sprite.center_x = state[1] * sprite.width + sprite.width * 0.5
-#                 sprite.center_y = self.height - (state[0] * sprite.width + sprite.width * 0.5)
-#                 self.walls.append(sprite)
-        
-#         self.goal = arcade.Sprite(":resources:images/items/flagGreen1.png", 0.5)
-#         self.goal.center_x = self.agent.environment.goal[1] * self.goal.width + self.goal.width * 0.5
-#         self.goal.center_y = self.height - (self.agent.environment.goal[0] * self.goal.width + self.goal.width * 0.5)
-
-#         self.player = arcade.Sprite(":resources:images/animated_characters/robot/robot_idle.png", 0.5)
-#         self.update_player()
-    
-#     def update_player(self):
-#         self.player.center_x = self.agent.state[1] * self.player.width + self.player.width * 0.5
-#         self.player.center_y = self.height - (self.agent.state[0] * self.player.width + self.player.width * 0.5)
-
-#     def on_update(self, delta_time):
-#         if agent.state != agent.environment.goal:
-#             action = self.agent.best_action()
-#             self.agent.do(action)
-#             self.agent.update_policy()
-#             self.update_player()
-    
-#     def on_draw(self):
-#         arcade.start_render()
-#         self.walls.draw()
-#         self.goal.draw()
-#         self.player.draw()
-
-#         arcade.draw_text(f"Score: {self.agent.score}", 10, 10, arcade.csscolor.WHITE, 20)
-
-#     def on_key_press(self, key, modifiers):
-#         if key == arcade.key.R:
-#             self.agent.reset()
-
-# if __name__ == "__main__":
-#     environment = Environment(MARIO)
-#     agent = Agent(environment)
-
-#     window = MarioWindow(agent)
-#     window.setup()
-#     arcade.run()

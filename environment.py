@@ -1,5 +1,5 @@
 REWARD_GOAL = 60
-REWARD_COIN = 15
+REWARD_COIN = 5
 REWARD_DEFAULT = -1
 REWARD_STUCK = -6
 REWARD_IMPOSSIBLE = -60
@@ -51,7 +51,7 @@ class Environment:
             new_state = (state[0], state[1] + 1)
             
         if new_state in self.walls:
-            return state, 0
+            return state, REWARD_STUCK
         
         if new_state in self.states:
             #calculer la récompense
@@ -61,8 +61,8 @@ class Environment:
                 reward = REWARD_GOAL
             elif self.states[new_state] in ['$']:
                 reward = REWARD_COIN
-            # if self.states[new_state] in ['#']:
-            #     reward = REWARD_IMPOSSIBLE
+            if self.states[new_state] in ['#']:
+                reward = REWARD_IMPOSSIBLE
             else:
                 reward = REWARD_DEFAULT
         else:
