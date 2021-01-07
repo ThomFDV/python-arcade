@@ -72,7 +72,6 @@ class MarioWindow(arcade.Window):
         self.coin_list = arcade.SpriteList()
         self.box_list = arcade.SpriteList()
 
-
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/robot/robot_idle.png", CHARACTER_SCALING)
         self.player_sprite.center_x = self.agent.environment.starting_point[1] * SPRITE_SIZE + SPRITE_SIZE * TILE_SCALING
         self.player_sprite.center_y = self.height - self.agent.environment.starting_point[0] * SPRITE_SIZE + SPRITE_SIZE * TILE_SCALING
@@ -108,6 +107,11 @@ class MarioWindow(arcade.Window):
 
         self.physique_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.wall_list, GRAVITY)
 
+
+    def update_player(self):
+        self.player_sprite.center_x = self.agent.state[1] * SPRITE_SIZE + SPRITE_SIZE * TILE_SCALING
+        self.player_sprite_center_y = self.height - (self.agent.state[0] * SPRITE_SIZE + SPRITE_SIZE * TILE_SCALING)
+
     def on_draw(self):
         arcade.start_render()
 
@@ -136,6 +140,17 @@ class MarioWindow(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
+
+        #region apply game learning with update_player
+        print(f"{self.agent.environment.goal}:{self.agent.state}")
+        print(self.player_sprite.center_y)
+
+        if self.agent.state != self.agent.environment.goal:
+            action = self.agent.best_action()
+            self.agent.do(action)
+            self.agent.update_policy()
+            self.update_player()
+
         self.physique_engine.update()
 
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
@@ -162,7 +177,7 @@ class MarioWindow(arcade.Window):
             changed = True
         
         # set end of game
-        if self.player_sprite.center_x >= self.end_of_map:
+        if self.player_sprite.center_x >= self.goal.center_x:
             #add code for end of game
             pass
 
