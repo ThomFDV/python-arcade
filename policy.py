@@ -1,5 +1,5 @@
 DEFAULT_LEARNING_RATE = 1
-DEFAULT_DISCOUNT_FACTOR = 0.5
+DEFAULT_DISCOUNT_FACTOR = 0.9
 
 class Policy: #Q-table
     def __init__(self, states, actions,

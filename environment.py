@@ -48,13 +48,14 @@ class Environment:
         print(self.states)
                     
     
-    def apply(self, state, action):
+    def apply(self, state, action, can_jump):
         #remove down when physique engine enable
+        
         if action == UP:
             new_state = (state[0] - 3, state[1])
         elif action == DOWN:
             new_state = (state[0] + 1, state[1])
-        elif action == LEFT:
+        if action == LEFT:
             new_state = (state[0], state[1] - 1)
         elif action == RIGHT:
             new_state = (state[0], state[1] + 1)
@@ -64,6 +65,13 @@ class Environment:
         
         if new_state in self.states:
             #calculer la récompense
+
+            #todo verify if working 
+            # if action == UP and not can_jump:
+            #     reward = REWARD_IMPOSSIBLE
+            #     new_state = state
+
+
             if self.states[new_state] in ['.']: #debut de carte : pénalité moyenne pour que le joueur bouge
                 reward = REWARD_STUCK
             elif self.states[new_state] in ['*']: #fin de carte : grosse récompense

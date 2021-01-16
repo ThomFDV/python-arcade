@@ -16,9 +16,9 @@ class Agent:
     def best_action(self):
         return self.policy.best_action(self.state)
 
-    def do(self, action):
+    def do(self, action, can_jump):
         self.previous_state = self.state
-        self.state, self.reward = self.environment.apply(self.state, action)
+        self.state, self.reward = self.environment.apply(self.state, action, can_jump)
         self.score += self.reward
         self.last_action = action
     

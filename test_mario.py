@@ -110,6 +110,12 @@ class MarioTestWindow(arcade.Window):
         y = self.height - (position[0] * sprite_size + sprite_size * scalling)
         return x, y
 
+    def convert_position_to_state(self, x, y, sprite_size, scalling):
+        p1 = int(x / sprite_size - scalling)
+        p0 = int((self.height - y) / sprite_size - scalling)
+        return p1, p0
+        
+
     def on_draw(self):
         arcade.start_render()
 
@@ -170,10 +176,24 @@ class MarioTestWindow(arcade.Window):
             arcade.set_viewport(self.view_left, self.width + self.view_left, self.view_bottom, self.height + self.view_bottom)
         
     def on_update(self, delta_time):
+
+        #test state from player
+        # test_state = self.agent.state
+        # print(f"s1: {test_state[1]}, s2: {test_state[0]}")
+        # x, y = self.convert_position(test_state, SPRITE_SIZE, WALL_SCALING)
+        # print(f"x: {x}, y: {y}")
+        # p1, p0 = self.convert_position_to_state(x, y, SPRITE_SIZE, WALL_SCALING)
+        # print(f"p1: {p1}, p0: {p0}")
+
+
+        # for getting x, y to state
+        p1, p0 = self.convert_position_to_state(self.player_sprite.center_x, self.player_sprite.center_y, SPRITE_SIZE, CHARACTER_SCALING)
+        self.agent.state = (p0, p1)
+
         if self.agent.state != self.agent.environment.goal:
             action = self.agent.best_action()
             print(f"Best Action: {action}")
-            self.agent.do(action)
+            self.agent.do(action, True)
             self.agent.update_policy()
             self.update_player()
             self.action_number += 1
