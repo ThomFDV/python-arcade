@@ -1,6 +1,7 @@
 import arcade
 from environment import Environment
 from agent import Agent
+from map import Map
 
 MARIO = """
 XXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -219,7 +220,15 @@ class MarioTestWindow(arcade.Window):
 
 
 def main():
-    environment = Environment(MARIO)
+
+    hauteur = 7
+    largeur = 30
+    piecesCoord = [(1, 11), (3, 22)]
+    plateformeCoord = [(2, 5, 1), (2, 9, 1), (2, 10, 2), (2, 11, 1), (2, 12, 2), (2, 13, 1)]
+
+    map = Map(hauteur, largeur, piecesCoord, plateformeCoord)
+
+    environment = Environment(map.showMap())
     agent = Agent(environment)
 
     window = MarioTestWindow(agent)
