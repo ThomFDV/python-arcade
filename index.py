@@ -4,8 +4,8 @@ from agent import Agent
 from map import Map
 from game import Game
 
-def main():
 
+def main():
     hauteur = 7
     largeur = 30
     piecesCoord = [(1, 11), (3, 22)]
@@ -19,6 +19,7 @@ def main():
     window = Game(agent, map.showMap())
     window.setup()
     arcade.run()
+
 
 if __name__ == "__main__":
     main()

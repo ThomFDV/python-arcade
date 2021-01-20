@@ -107,19 +107,11 @@ class Game(arcade.Window):
             if self.states[state] == '$':
                 sprite = arcade.Sprite(":resources:images/items/gold_1.png", WALL_SCALING)
                 sprite.center_x, sprite.center_y = self.convert_position(state, SPRITE_SIZE, WALL_SCALING)
-                # sprite.center_x = state[1] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
-                # sprite.center_y = self.height - (state[0] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING)
                 self.coin_list.append(sprite)
-
-        # for state in self.agent.environment.states:
-        #     if self.agent.environment.states[state] == '#':
 
         self.goal_sprite = arcade.Sprite(":resources:images/items/flagGreen1.png", WALL_SCALING)
         self.goal_sprite.center_x, self.goal_sprite.center_y = self.convert_position(self.goal, self.goal_sprite.width,
                                                                                      WALL_SCALING)
-        # self.goal.center_x = self.agent.environment.goal[1] * self.goal.width + self.goal.width * WALL_SCALING
-        # self.goal.center_y = self.height - (self.agent.environment.goal[0] * self.goal.width + self.goal.width * WALL_SCALING)
-
         self.physique_engine = arcade.PhysicsEnginePlatformer(self.player_sprite, self.wall_list, GRAVITY)
 
     def on_draw(self):
