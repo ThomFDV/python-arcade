@@ -59,51 +59,11 @@ class MarioTestWindow(arcade.Window):
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
-    def setup(self):
-        self.view_bottom = 0
-        self.view_left = 0
-
-        self.score = 0
-
-        self.action_number = 0
-
-        self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-        self.box_list = arcade.SpriteList()
-
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/robot/robot_idle.png", CHARACTER_SCALING)
-        self.player_sprite.center_x = self.agent.environment.starting_point[1] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
-        self.player_sprite.center_y = self.height - self.agent.environment.starting_point[0] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
-        self.player_list.append(self.player_sprite)
-
-        for wall in self.agent.environment.walls:
-            sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", WALL_SCALING)
-            sprite.center_x = wall[1] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
-            sprite.center_y = self.height - (wall[0] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING)
-            self.wall_list.append(sprite)
-
-        for state in self.agent.environment.states:
-            if self.agent.environment.states[state] == '$':
-                sprite = arcade.Sprite(":resources:images/items/gold_1.png", WALL_SCALING)
-                sprite.center_x, sprite.center_y = self.convert_position(state, SPRITE_SIZE, WALL_SCALING)
-                #sprite.center_x = state[1] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
-                #sprite.center_y = self.height - (state[0] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING)
-                self.coin_list.append(sprite)
-
-        # for state in self.agent.environment.states:
-        #     if self.agent.environment.states[state] == '#':
-                
-        
-        self.goal = arcade.Sprite(":resources:images/items/flagGreen1.png", WALL_SCALING)
-        self.goal.center_x, self.goal.center_y = self.convert_position(self.agent.environment.goal, self.goal.width, WALL_SCALING)
-        #self.goal.center_x = self.agent.environment.goal[1] * self.goal.width + self.goal.width * WALL_SCALING
-        #self.goal.center_y = self.height - (self.agent.environment.goal[0] * self.goal.width + self.goal.width * WALL_SCALING)
 
     def update_player(self):
-        #self.player_sprite.center_x = self.agent.state[1] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
-        #self.player_sprite.center_y = self.height - (self.agent.state[0] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING)
-        self.player_sprite.center_x, self.player_sprite.center_y = self.convert_position(self.agent.state, SPRITE_SIZE, WALL_SCALING)
+        self.player_sprite.center_x = self.agent.state[1] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING
+        self.player_sprite.center_y = self.height - (self.agent.state[0] * SPRITE_SIZE + SPRITE_SIZE * WALL_SCALING)
+        # self.player_sprite.center_x, self.player_sprite.center_y = self.convert_position(self.agent.state, SPRITE_SIZE, WALL_SCALING)
 
     
     def convert_position(self, position, sprite_size, scalling):
@@ -191,7 +151,7 @@ class MarioTestWindow(arcade.Window):
         p1, p0 = self.convert_position_to_state(self.player_sprite.center_x, self.player_sprite.center_y, SPRITE_SIZE, CHARACTER_SCALING)
         self.agent.state = (p0, p1)
 
-        if self.agent.state != self.agent.environment.goal:
+        if self.agent.state != self.agent.environment.goal and self.agent.score > -400:
             action = self.agent.best_action()
             print(f"Best Action: {action}")
             self.agent.do(action, True)

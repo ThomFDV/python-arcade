@@ -28,8 +28,9 @@ CHARACTER_SCALING = 0.66
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 
-PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 1
+PLAYER_MOVEMENT_SPEED = 5
+
 PLAYER_JUMP_SPEED = 22
 
 LEFT_VIEWPORT_MARGIN = 250
@@ -148,7 +149,7 @@ class MarioWindow(arcade.Window):
 
         if self.agent.state != self.agent.environment.goal:
             action = self.agent.best_action()
-            self.agent.do(action)
+            self.agent.do(action, self.physique_engine.can_jump())
             self.agent.update_policy()
             self.update_player()
 
@@ -170,7 +171,7 @@ class MarioWindow(arcade.Window):
         changed = False
 
         if self.player_sprite.center_y < -100:
-            self.player_prite.center_x = 0
+            self.player_sprite.center_x = 0
             self.player_sprite_center_y = 0
 
             self.view_left = 0
